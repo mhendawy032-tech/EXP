@@ -236,7 +236,7 @@ function add(o){data.push({id:Date.now()+Math.random(),...o});save();beep();rend
 function shift(n){M=pv(M,-n);render()}
 function mnav(){const[y,m]=M.split("-").map(Number),cur=M===per(today),left=pleft(y,m);
  return `<div class="mn"><button onclick="shift(-1)">›</button><div><b>${new Date(y,m-1,1).toLocaleDateString("ar-EG-u-nu-latn",{month:"long",year:"numeric"})}</b><small>${cur?"باقي "+left+" يوم":""}</small></div><button onclick="shift(1)">‹</button></div>`}
-let YR=false;let DT={k:"",t:0};function dbl(k){const n=Date.now();if(DT.k===k&&n-DT.t<450){DT={k:"",t:0};sheet(inex()[k==="i"?0:1]);lsh()}else DT={k:k,t:n}}const SMK=()=>YR?M.slice(0,4):M;
+let YR=false;let DT={k:"",t:0};function dbl(k){const n=Date.now();if(DT.k===k&&n-DT.t<450){DT={k:"",t:0};if(k==="r"){closeS();sgo("m");window.scrollTo(0,0)}else{sheet(inex()[k==="i"?0:1]);lsh()}}else DT={k:k,t:n}}const SMK=()=>YR?M.slice(0,4):M;
 function ysh(n){M=(+M.slice(0,4)+n)+"-"+M.slice(5);render()}
 function ysel(y){M=y+"-"+M.slice(5);render()}
 function msel(n){M=M.slice(0,4)+"-"+String(n).padStart(2,"0");render()}
@@ -369,7 +369,7 @@ function npg(){const c=sm(SMK()),te=c.te;SK=[];MK=[];
    return `<div class="cr" onclick="nto(${i})" style="cursor:pointer"><span class="bg ${k}">${tot?Math.round(mt/tot*100):0}%</span><i class="ic">${ICO[m]||"•"}</i><b style="flex:1">${esc(m)}</b><b>${fmt(mt)}</b><span class="ch">${o?"▾":"‹"}</span></div>`+(o?l.map(([x,v])=>{const j=SK.push(x)-1;return `<div class="cr sub" onclick="nss(${j})" style="cursor:pointer"><span class="bg ${k}" onclick="event.stopPropagation();tg(${j})">${mt?Math.round(v/mt*100):0}%</span><span style="flex:1">${esc(x.split("|")[1])}</span><span>${fmt(v)}</span><span class="ch">‹</span></div>`}).join(""):"")}).join("")||'<p class="mu" style="text-align:center">لا توجد بنود</p>')};
  $("v").innerHTML=snav()+ncl(false)+sec("الضروريات",N,"bu")+sec("الكماليات",L,"rd2")+'<p class="mu" style="margin:10px;font-size:12px">اضغط على البند الرئيسي لعرض بنوده الفرعية، وعلى البند الفرعي لعرض حركاته. اضغط على نسبة البند الفرعي لتحويله بين ضروري (أزرق) وكمالي (أحمر).</p>'}
 function sgo(k){const m=M,y=YR;go(k);M=m;YR=y;render()}
-function s4(){const c=sm(SMK()),r=c.ti-c.te-c.s,bb=bal(SMK()),tsv=WAL.filter(w=>sav.includes(w)||w!=="Wallet").reduce((z,w)=>z+bb[w],0);return `<div class="s4"><div onclick="sgo('i');dbl('i')" style="user-select:none;-webkit-user-select:none;touch-action:manipulation"><span class="inc">${fmt(c.ti)}</span>الدخل</div><div onclick="sgo('e');dbl('e')" style="user-select:none;-webkit-user-select:none;touch-action:manipulation"><span class="exp">${fmt(c.te)}</span>المصاريف</div><div><span class="${c.s<0?"exp":"inc"}">${fmt(c.s)}</span>ادخار</div><div><span class="${r<0?"exp":"inc"}">${fmt(r)}</span>المتبقي</div></div>`}
+function s4(){const c=sm(SMK()),r=c.ti-c.te-c.s,bb=bal(SMK()),tsv=WAL.filter(w=>sav.includes(w)||w!=="Wallet").reduce((z,w)=>z+bb[w],0);return `<div class="s4"><div onclick="sgo('i');dbl('i')" style="user-select:none;-webkit-user-select:none;touch-action:manipulation"><span class="inc">${fmt(c.ti)}</span>الدخل</div><div onclick="sgo('e');dbl('e')" style="user-select:none;-webkit-user-select:none;touch-action:manipulation"><span class="exp">${fmt(c.te)}</span>المصاريف</div><div><span class="${c.s<0?"exp":"inc"}">${fmt(c.s)}</span>ادخار</div><div onclick="dbl('r')" style="user-select:none;-webkit-user-select:none;touch-action:manipulation"><span class="${r<0?"exp":"inc"}">${fmt(r)}</span>المتبقي</div></div>`}
 function inex(){const c=sm(SMK()),te=c.te,hr='<hr style="border:0;border-top:1px solid var(--bd)">',PC=["#63b3db","#f5d000","#7cb55a","#d14b52","#d97fb0","#26356b"];
 let INH="",EXH="";
 {const im={};data.forEach(r=>{if(r.k==="i"&&per(r.d).startsWith(SMK()))im[r.m]=(im[r.m]||0)+r.a});
@@ -611,8 +611,7 @@ function kk(k){
  ckr()}
 document.addEventListener("click",e=>{if(Date.now()-ckT<350&&e.target.closest&&e.target.closest("#sh,#ck")){e.stopPropagation();e.preventDefault()}},true);
 document.addEventListener("focusin",e=>{const t=e.target;if(t.matches&&t.matches("input[type=number]")){t.blur();calc(t)}});
-{const lq=window.matchMedia("(orientation: landscape) and (max-height: 500px) and (pointer: coarse)"),lh=e=>{if(LSH)return;if(e.matches&&V!=="m"){closeS();$("ck").classList.add("hide");const m=M,y=YR;go("m");M=m;YR=y;render()}else if(!e.matches&&V==="m"){const m=M,y=YR;go("e");M=m;YR=y;render();window.scrollTo(0,0)}};
- if(lq.addEventListener)lq.addEventListener("change",lh);else if(lq.addListener)lq.addListener(lh)}
+
 /* كل ضغطة على زر أو بند ترجّع الصفحة لأولها */
 document.addEventListener("click",e=>{const t=e.target&&e.target.closest?e.target.closest("button,[onclick],.pi,.card,.hb,.row,.item,a,summary"):null;if(!t||e.target.closest("input,select,textarea,label,details,.st-ch,[onclick^=\"sgj(\"],[onclick^=\"nto(\"],[onclick^=\"cto(\"],[onclick^=\"sto(\"],[onclick^=\"tw(\"]"))return;setTimeout(()=>{const keep=SH0||!$("sh").classList.contains("hide")||(V0==="m"&&V==="m"),y=SY0;if(keep){window.scrollTo(0,y);return}window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0},0)});
 let SH0=false,SY0=0,V0="";document.addEventListener("click",()=>{V0=V;SH0=!$("sh").classList.contains("hide");SY0=window.scrollY},true);
