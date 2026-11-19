@@ -220,8 +220,10 @@ function sheet(h){if($("sh").classList.contains("hide"))ckT=Date.now();let t="";
  $("sb").innerHTML='<div class="xh"><button type="button" class="xc" onclick="closeS()" aria-label="إغلاق">✕</button><h3>'+t+'</h3></div>'+h;$("sh").classList.remove("hide")}
 var LSH=false;
 var LSY=0;
-function lsh(){LSY=window.scrollY;LSH=true;$("sh").classList.add("ls");document.body.classList.add("lsp");window.scrollTo(0,0);try{const so=window.screen&&screen.orientation;if(so&&so.lock){const r=so.lock("landscape");if(r&&r.catch)r.catch(()=>{})}}catch(_){}}
-function closeS(){$("sh").classList.add("hide");if(LSH){LSH=false;$("sh").classList.remove("ls");document.body.classList.remove("lsp");window.scrollTo(0,LSY);setTimeout(()=>window.scrollTo(0,LSY),40);try{const so=window.screen&&screen.orientation;so&&so.unlock&&so.unlock()}catch(_){}}}
+function rotFix(){const e=$("sh");if(!LSH||!e)return;e.classList.toggle("rot",window.innerHeight>window.innerWidth)}
+window.addEventListener("resize",rotFix);window.addEventListener("orientationchange",()=>setTimeout(rotFix,120));
+function lsh(){LSY=window.scrollY;LSH=true;$("sh").classList.add("ls");document.body.classList.add("lsp");rotFix();$("sb").scrollTop=0;try{const so=window.screen&&screen.orientation;if(so&&so.lock){const r=so.lock("landscape");if(r&&r.catch)r.catch(()=>{})}}catch(_){}}
+function closeS(){$("sh").classList.add("hide");if(LSH){LSH=false;$("sh").classList.remove("ls","rot");document.body.classList.remove("lsp");window.scrollTo(0,LSY);setTimeout(()=>window.scrollTo(0,LSY),40);try{const so=window.screen&&screen.orientation;so&&so.unlock&&so.unlock()}catch(_){}}}
 function add(o){data.push({id:Date.now()+Math.random(),...o});save();beep();render()}
 function shift(n){M=pv(M,-n);render()}
 function mnav(){const[y,m]=M.split("-").map(Number),cur=M===per(today),left=pleft(y,m);
@@ -561,10 +563,13 @@ body{font-family:system-ui,"Segoe UI",Tahoma,sans-serif;margin:0;background:#f3f
 details{background:#fff;border-radius:10px;margin-bottom:6px;padding:6px 10px}summary{cursor:pointer;font-weight:700}button{font:inherit;padding:10px 16px;border:0;border-radius:8px;background:#1a3b8b;color:#fff}
 @media print{body{background:#fff}.np{display:none}h2{break-after:avoid}tr{break-inside:avoid}}
 body.lsp>header,body.lsp>#v,body.lsp>#bar,body.lsp>#bar2{display:none!important}
-#sh.ls{position:static;inset:auto;background:var(--bg);display:block;z-index:auto;min-height:100vh;min-height:100dvh}
-#sh.ls #sb{max-width:none;width:100%;max-height:none;overflow:visible;border-radius:0;background:var(--bg);animation:none;margin:0;padding:8px 12px calc(14px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;align-items:start}
-#sh.ls #sb>.xh{grid-column:1/-1;position:static!important;top:auto!important;background:transparent;box-shadow:none}
-#sh.ls #sb>*{margin-top:0;margin-bottom:0}
+body.lsp{overflow:hidden!important}
+#sh.ls{position:fixed;inset:0;background:var(--bg);display:block;z-index:200;overflow:hidden}
+#sh.ls.rot{inset:auto;top:0;left:0;right:auto;bottom:auto;width:100vh;width:100dvh;height:100vw;height:100dvw;transform-origin:0 0;transform:rotate(90deg) translate(0,-100%)}
+#sh.ls #sb{max-width:none;width:100%;height:100%;max-height:none;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;border-radius:0;background:var(--bg);animation:none;margin:0;padding:0 12px calc(14px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;align-items:start;align-content:start}
+#sh.ls #sb>.xh{grid-column:1/-1;position:static!important;background:transparent;box-shadow:none;margin:0 -12px;padding:8px 12px 6px;padding-top:calc(8px + env(safe-area-inset-top,0px));padding-inline-start:60px}
+#sh.ls #sb>.xh .xc{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));inset-inline-start:12px;z-index:10;width:38px;height:38px;background:var(--card);box-shadow:0 2px 8px #0004}
+#sh.ls #sb>*:not(.xh){margin-top:0;margin-bottom:0}
 </style></head><body><div class="p">
 <h1>📊 تقرير المصاريف الكامل</h1><div class="np"><button onclick="print()">طباعة / حفظ PDF</button></div><p>تاريخ التقرير: ${today} · من ${data.length?tr2[tr2.length-1].d:"—"} إلى ${data.length?tr2[0].d:"—"} · ${data.length} حركة</p>
 <h2>الملخص العام</h2><div class="k"><div><b class="g">${f(T.ti)}</b>إجمالي الدخل</div><div><b class="r">${f(T.te)}</b>إجمالي المصاريف</div><div><b>${f(T.s)}</b>صافي الادخار</div><div><b class="${cl(T.ti-T.te-T.s)}">${f(T.ti-T.te-T.s)}</b>المتبقي</div><div><b>${f(T.te/nm)}</b>متوسط المصروف الشهري</div><div><b>${f(T.ti/nm)}</b>متوسط الدخل الشهري</div><div><b>${T.ti?((T.ti-T.te)/T.ti*100).toFixed(0)+"%":"—"}</b>نسبة التوفير</div><div><b>${P(lx,TE)}</b>كماليات من المصاريف</div></div>
