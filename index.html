@@ -177,6 +177,14 @@ body,input,select,button,textarea,option{text-transform:uppercase}
 #sb .st-one>input{flex:1 1 150px;min-width:0;height:44px;min-height:44px;padding:0 14px;border-radius:12px}
 #sb .st-ck{display:flex;align-items:center;gap:6px;white-space:nowrap;margin:0;font-size:14px;color:var(--tx);cursor:pointer}
 .st-ck input{width:22px;height:22px;padding:0;flex:none;accent-color:var(--hd)}
+body.lsp>header,body.lsp>#v,body.lsp>#bar,body.lsp>#bar2{display:none!important}
+body.lsp{overflow:hidden!important}
+#sh.ls{position:fixed;inset:0;background:var(--bg);display:block;z-index:200;overflow:hidden}
+#sh.ls.rot{inset:auto;top:0;left:0;right:auto;bottom:auto;width:100vh;width:100dvh;height:100vw;height:100dvw;transform-origin:0 0;transform:rotate(90deg) translate(0,-100%)}
+#sh.ls #sb{max-width:none;width:100%;height:100%;max-height:none;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;border-radius:0;background:var(--bg);animation:none;margin:0;padding:0 12px calc(14px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:1fr;gap:10px;align-items:start;align-content:start}
+#sh.ls #sb>.xh{grid-column:1/-1;position:static!important;top:auto!important;background:transparent;box-shadow:none;margin:0 -12px;padding:8px 12px 6px;padding-top:calc(8px + env(safe-area-inset-top,0px))}
+#sh.ls #sb>.xh .xc{position:static;width:38px;height:38px}
+#sh.ls #sb>*:not(.xh){margin-top:0;margin-bottom:0}
 </style>
 </head>
 <body>
@@ -562,14 +570,6 @@ body{font-family:system-ui,"Segoe UI",Tahoma,sans-serif;margin:0;background:#f3f
 .lg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}.lg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-left:5px}.fx{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center}
 details{background:#fff;border-radius:10px;margin-bottom:6px;padding:6px 10px}summary{cursor:pointer;font-weight:700}button{font:inherit;padding:10px 16px;border:0;border-radius:8px;background:#1a3b8b;color:#fff}
 @media print{body{background:#fff}.np{display:none}h2{break-after:avoid}tr{break-inside:avoid}}
-body.lsp>header,body.lsp>#v,body.lsp>#bar,body.lsp>#bar2{display:none!important}
-body.lsp{overflow:hidden!important}
-#sh.ls{position:fixed;inset:0;background:var(--bg);display:block;z-index:200;overflow:hidden}
-#sh.ls.rot{inset:auto;top:0;left:0;right:auto;bottom:auto;width:100vh;width:100dvh;height:100vw;height:100dvw;transform-origin:0 0;transform:rotate(90deg) translate(0,-100%)}
-#sh.ls #sb{max-width:none;width:100%;height:100%;max-height:none;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;border-radius:0;background:var(--bg);animation:none;margin:0;padding:0 12px calc(14px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;align-items:start;align-content:start}
-#sh.ls #sb>.xh{grid-column:1/-1;position:static!important;background:transparent;box-shadow:none;margin:0 -12px;padding:8px 12px 6px;padding-top:calc(8px + env(safe-area-inset-top,0px));padding-inline-start:60px}
-#sh.ls #sb>.xh .xc{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));inset-inline-start:12px;z-index:10;width:38px;height:38px;background:var(--card);box-shadow:0 2px 8px #0004}
-#sh.ls #sb>*:not(.xh){margin-top:0;margin-bottom:0}
 </style></head><body><div class="p">
 <h1>📊 تقرير المصاريف الكامل</h1><div class="np"><button onclick="print()">طباعة / حفظ PDF</button></div><p>تاريخ التقرير: ${today} · من ${data.length?tr2[tr2.length-1].d:"—"} إلى ${data.length?tr2[0].d:"—"} · ${data.length} حركة</p>
 <h2>الملخص العام</h2><div class="k"><div><b class="g">${f(T.ti)}</b>إجمالي الدخل</div><div><b class="r">${f(T.te)}</b>إجمالي المصاريف</div><div><b>${f(T.s)}</b>صافي الادخار</div><div><b class="${cl(T.ti-T.te-T.s)}">${f(T.ti-T.te-T.s)}</b>المتبقي</div><div><b>${f(T.te/nm)}</b>متوسط المصروف الشهري</div><div><b>${f(T.ti/nm)}</b>متوسط الدخل الشهري</div><div><b>${T.ti?((T.ti-T.te)/T.ti*100).toFixed(0)+"%":"—"}</b>نسبة التوفير</div><div><b>${P(lx,TE)}</b>كماليات من المصاريف</div></div>
