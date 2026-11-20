@@ -175,7 +175,7 @@ html,body{height:100%;overflow:hidden}body{display:flex;flex-direction:column}#v
 <div id="ck" class="hide" onclick="if(event.target===this&&Date.now()-ckT>350)this.classList.add('hide')"><div id="cb"></div></div>
 <div id="lk" class="hide"><b style="font-size:20px">أدخل الرمز السري</b><input id="lp" type="password" inputmode="numeric" maxlength="4" oninput="if(this.value.length===4)unl()"><small id="le" class="exp"></small></div>
 <script>
-const SCV=document.getElementById("v");function scrT(x,y){if(SCV)SCV.scrollTop=((x&&typeof x==="object")?x.top:y)||0}function scrY(){return SCV?SCV.scrollTop:0}
+const SCV=document.getElementById("v");let _cv=0;function scrT(x,y){if(!SCV)return;const t=((x&&typeof x==="object")?x.top:y)||0;if(t===0&&SCV.scrollTop>1){SCV.style.transition="none";SCV.style.opacity="0";SCV.scrollTop=0;const id=++_cv;requestAnimationFrame(()=>requestAnimationFrame(()=>{if(id!==_cv)return;SCV.style.transition="opacity .09s ease-out";SCV.style.opacity=""}))}else SCV.scrollTop=t}function scrY(){return SCV?SCV.scrollTop:0}
 
 let CATS={"الأبناء":["مستلزمات المدرسة","اطباء وعلاج","مصروف وحلويات","باص المدسه","اشتركات رياضيه","ملابس واحذيه","كورسات","ألعاب وملاهى","حلاق","اعياد ميلاد","مستلزمات تجميل","المصروفات الدراسيه","دروس يوسف","تليفون","موبيل"],
 "البيت":["مقاضي","أثاث واجهزه","ماكولات بالخارج","انترنت","صيانة","كهرباء","غاز","صيانه شهريه البرج","هاتف"],
