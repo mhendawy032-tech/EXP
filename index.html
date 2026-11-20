@@ -61,7 +61,7 @@ input,select{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8p
 details summary{cursor:pointer}
 :root{color-scheme:light}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark}}:root[data-theme="dark"]{color-scheme:dark}option,optgroup{background:var(--card);color:var(--tx)}
 html{-webkit-text-size-adjust:100%;touch-action:pan-x pan-y}body{overscroll-behavior-y:none;font-variant-numeric:tabular-nums}*{-webkit-tap-highlight-color:transparent}button{touch-action:manipulation}button:active,.rw:active,.li:active,.pi:active{transform:scale(.98);opacity:.85}
-header{box-shadow:0 2px 14px #0003}header{background:linear-gradient(160deg,var(--hd),color-mix(in srgb,var(--hd) 65%,#000))}
+header{box-shadow:0 2px 14px #0003;transform:translateZ(0);-webkit-transform:translateZ(0);will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden}header{background:linear-gradient(160deg,var(--hd),color-mix(in srgb,var(--hd) 65%,#000))}
 .hr h1{font-weight:700;letter-spacing:.2px}
 #v{padding-bottom:190px}
 .st{margin:6px 10px 10px;border:0;border-radius:16px;box-shadow:0 1px 3px #0000000d,0 6px 18px #0000000f}.st b{font-size:18px}
@@ -250,7 +250,7 @@ function main(){const c=sm(SMK()),tot="",rs=data.filter(r=>r.k==="e"&&per(r.d).s
 let pm=0,pa="",QS="",QV="";
 const nrm=t=>String(t==null?"":t).toLowerCase().replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه");
 const mt=(a,q)=>{const h=nrm(a.join(" "));return nrm(q).split(/\s+/).filter(Boolean).every(w=>h.includes(w))};
-function fitPl(){document.querySelectorAll("#pl .hb").forEach(c=>{const b=c.querySelector("b"),sp=c.querySelector("span");if(!b||!sp)return;b.style.fontSize="";let f=19;while(f>9&&sp.offsetWidth+b.offsetWidth+30>c.clientWidth){f--;b.style.fontSize=f+"px"}})}new MutationObserver(fitPl).observe($("pl"),{childList:true});window.addEventListener("resize",fitPl);
+function fitPl(){document.querySelectorAll("#pl .hb").forEach(c=>{const b=c.querySelector("b"),sp=c.querySelector("span");if(!b||!sp)return;b.style.fontSize="";let f=19;while(f>9&&sp.offsetWidth+b.offsetWidth+30>c.clientWidth){f--;b.style.fontSize=f+"px"}})}new MutationObserver(fitPl).observe($("pl"),{childList:true});{let lw=innerWidth;window.addEventListener("resize",()=>{if(innerWidth!==lw){lw=innerWidth;fitPl()}})}
 function sbk(){const m=M,y=YR;go('e');M=m;YR=y;render();window.scrollTo(0,0)}
 function go(k){if(k!==V){if(!["m","s","g","n"].includes(k))RB=null;SG="";OW="";NS="";NO={};QS=QV="";YR=false;M=per(today)}V=k;render()}
 function pkh(mi){const k=CK[mi],ai=t=>pa===t?`<div class="ai"><input id="pn" placeholder="${t==="m"?"بند رئيسي جديد":"بند فرعي جديد"}"><button onclick="padd()">+</button></div>`:`<button class="ab" onclick="pa='${t}';pick(${mi})">${t==="m"?"إضافة بند رئيسي":"إضافة بند فرعي"}</button>`;
@@ -587,7 +587,7 @@ let SH0=false,SY0=0,V0="";document.addEventListener("click",()=>{V0=V;SH0=!$("sh
  const end=()=>{if(!sw||sw.k!==1){sw=null;return}const dx=sw.dx,w=W(),dir=dx<0?1:-1,ti=sw.i+dir,vel=Math.abs(dx)/Math.max(1,Date.now()-sw.t);sw=null;
   if(!(ti>=0&&ti<PG.length&&(Math.abs(dx)>w*.28||(vel>.5&&Math.abs(dx)>40)))){mv(0,220);setTimeout(()=>{rmG();fin()},240);return}
   busy2=true;const g0=gh;mv(-dir*w,g0?220:160);
-  setTimeout(()=>{vw.style.transition="none";vw.style.transform="";try{const m=M,y=YR,k=PG[ti];if(k!==V){if(!["m","s","g","n"].includes(k))RB=null;SG="";OW="";NS="";NO={};QS=QV=""}V=k;M=m;YR=y;render();window.scrollTo(0,0)}catch(err){}
+  setTimeout(()=>{vw.style.transition="none";vw.style.transform="";window.scrollTo(0,0);try{const m=M,y=YR,k=PG[ti];if(k!==V){if(!["m","s","g","n"].includes(k))RB=null;SG="";OW="";NS="";NO={};QS=QV=""}V=k;M=m;YR=y;render();window.scrollTo(0,0)}catch(err){}
    if(g0){const done=()=>{window.scrollTo(0,0);fin();g0.el.style.transition="opacity .16s ease-out";g0.el.style.opacity="0";setTimeout(()=>{rmG();busy2=false},190)};requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(done,40)))}else{mv(dir*w,0);void vw.offsetWidth;mv(0,200);setTimeout(()=>{fin();busy2=false},230)}},g0?235:165)};
  document.addEventListener("touchend",end);document.addEventListener("touchcancel",end);
  /* نقاط الصفحات (زي الآيفون) */
