@@ -378,7 +378,10 @@ let TH=ld("mas_th","a"),CAL=ld("mas_cal","g"),NL=ld("mas_nl","l"),SD=ld("mas_sd"
 const per=d=>{if(SD<=1)return d.slice(0,7);const y=+d.slice(0,4),m=+d.slice(5,7),st=Math.min(SD,new Date(y,m,0).getDate());return +d.slice(8)>=st?pv(d.slice(0,7),-1):d.slice(0,7)};
 M=per(today);
 const HCS=["#1a3b8b","#0f766e","#6d28d9","#b45309","#9f1239","#1f2937"];
-const applyHC=()=>{if(HC)document.documentElement.style.setProperty("--hd",HC)};applyHC();
+let HP=ld("mas_hp",{});if(!HP||typeof HP!=="object"||Array.isArray(HP))HP={};
+const PGN=[["m","الرئيسية"],["e","المصاريف"],["i","الدخل"],["s","المدخرات"],["g","الإعدادات"]];
+const pgk=()=>V==="x"?(XK==="i"?"i":"e"):V==="n"?"m":V;
+const applyHC=()=>{const c=HP[pgk()]||HC,st=document.documentElement.style;if(c)st.setProperty("--hd",c);else st.removeProperty("--hd");const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=c||getComputedStyle(document.documentElement).getPropertyValue("--hd").trim()||"#1a3b8b"};try{applyHC()}catch(e){}
 const applyTH=()=>{const r=document.documentElement;if(TH==="a")r.removeAttribute("data-theme");else r.setAttribute("data-theme",TH==="d"?"dark":"light")};applyTH();
 if(PIN)$("lk").classList.remove("hide");
 const dl=d=>{const D=new Date(d+"T00:00:00"),nl=NL==="a"?"nu-arab":"nu-latn";if(CAL==="h")return D.toLocaleDateString("ar-EG-u-ca-islamic-"+nl,{weekday:"long",day:"numeric",month:"long",year:"numeric"});return D.toLocaleDateString("ar-EG-u-"+nl,{weekday:"long",day:"numeric",month:"long",year:"numeric"})};
@@ -390,8 +393,10 @@ function pindel(){if(btoa($("pp").value)===PIN){PIN="";sv("mas_pin","");closeS()
 function gt(k){if(k==="c"){CAL=CAL==="g"?"h":"g";sv("mas_cal",CAL)}else if(k==="n"){NL=NL==="l"?"a":"l";sv("mas_nl",NL)}else if(k==="s"){SND=!SND;sv("mas_snd",SND)}else if(k==="r"){REM=!REM;sv("mas_rem",REM)}else if(k==="t"){TH=TH==="a"?"d":TH==="d"?"l":"a";sv("mas_th",TH);applyTH()}render()}
 function sds(){sheet(`<h3 style="margin:0">يوم الراتب</h3><p class="mu" style="font-size:13px">يبدأ الشهر المالي من هذا اليوم (مثلًا 31 = من 31 الشهر السابق).</p><select id="sdv">${Array.from({length:31},(_,i)=>`<option ${i+1===SD?"selected":""}>${i+1}</option>`).join("")}</select><button class="btn" onclick="sdsv()">حفظ</button>`)}
 function sdsv(){SD=+$("sdv").value;sv("mas_sd",SD);M=per(today);closeS();render()}
-function hcp(){sheet(`<h3 style="margin:0">لون التطبيق</h3><div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px">${HCS.map(c=>`<span class="bg" style="background:${c};width:52px;height:52px;border-radius:50%" onclick="hcs('${c}')"></span>`).join("")}</div>`)}
-function hcs(c){HC=c;sv("mas_hc",c);applyHC();closeS()}
+function hcpH(){return `<h3 style="margin:0">لون كل صفحة</h3>`+PGN.map(([k,n])=>{const cur=HP[k]||HC||"";return `<div style="margin-top:12px"><b style="font-size:14px">${n}</b><div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:6px">${HCS.map(c=>`<span class="bg" style="background:${c};width:38px;min-width:0;height:38px;padding:0;border-radius:50%;cursor:pointer;${cur===c?"outline:3px solid var(--tx);outline-offset:2px":""}" onclick="hcs('${k}','${c}')"></span>`).join("")}<input type="color" value="${/^#[0-9a-f]{6}$/i.test(cur)?cur:"#1a3b8b"}" onchange="hcs('${k}',this.value)" aria-label="لون مخصص" style="width:38px;height:38px;min-height:0;padding:0;border:0;border-radius:50%;background:none;flex:none"></div></div>`}).join("")+`<button class="btn" onclick="hcr()">استرجاع الألوان الافتراضية</button>`}
+function hcp(){sheet(hcpH())}
+function hcs(k,c){HP[k]=c;sv("mas_hp",HP);applyHC();ssheet(hcpH())}
+function hcr(){HP={};HC="";sv("mas_hp",HP);sv("mas_hc","");applyHC();ssheet(hcpH())}
 function ssheet(h){const v=!$("sh").classList.contains("hide"),s=v?$("sb").scrollTop:0;sheet(h);if(v)$("sb").scrollTop=s}
 let CO=null,CDK=null;
 const stEnter=f=>`onkeydown="if(event.key==='Enter'){event.preventDefault();${f}}"`;
@@ -600,6 +605,7 @@ let SH0=false,SY0=0,V0="";document.addEventListener("click",()=>{V0=V;SH0=!$("sh
  PG.forEach(()=>{const d=document.createElement("i");d.style.cssText="display:block;width:7px;height:7px;border-radius:50%;background:var(--tx);transition:opacity .2s,transform .2s";dt.appendChild(d)});document.body.appendChild(dt);
  const updDots=()=>{const i=PG.indexOf(V);if(i<0||(V==="s"&&SG)){dt.style.display="none";return}const bb=[$("bar"),$("bar2")].find(e=>e&&!e.classList.contains("hide")),bh=bb?bb.offsetHeight:0;dt.style.bottom="calc("+(bh+8)+"px + "+(bh?"0px":"env(safe-area-inset-bottom,0px)")+")";dt.style.display="flex";[...dt.children].forEach((d,k)=>{d.style.opacity=k===i?".8":".22";d.style.transform=k===i?"scale(1.25)":"scale(1)"})};
  const r1=render;render=function(){const r=r1.apply(this,arguments);try{updDots()}catch(e){}return r};try{updDots()}catch(e){}}
+{const r2=render;render=function(){const r=r2.apply(this,arguments);try{applyHC()}catch(e){}return r}}
 V="e";render();scrT(0,0);bkRemind();
 </script>
 </body>
