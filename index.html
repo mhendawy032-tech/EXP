@@ -211,7 +211,7 @@ function closeS(){$("sh").classList.add("hide")}
 function add(o){data.push({id:Date.now()+Math.random(),...o});save();beep();render()}
 function shift(n){M=pv(M,-n);render()}
 function goHome(){const pv0=V;closeS();if(pv0==="m"){sgo("e");RB=null;render();window.scrollTo(0,0);return}sgo("m");RB=pv0;render();window.scrollTo(0,0)}
-function goX(k){const pv1=V;closeS();XK=k;sgo("x");RB=pv1;render();window.scrollTo(0,0)}
+function goX(k){const pv1=V;closeS();if(pv1==="x"&&XK===k){sgo(k==="i"?"i":"e");window.scrollTo(0,0);return}XK=k;sgo("x");RB=pv1;render();window.scrollTo(0,0)}
 let YR=false;let RB=null;let XK="";let DT={k:"",t:0};function dbl(k){const n=Date.now();if(DT.k===k&&n-DT.t<450){DT={k:"",t:0};if(k==="r"){const pv0=V;closeS();sgo("m");RB=pv0!=="m"?pv0:null;render();window.scrollTo(0,0)}else{const pv1=V;closeS();XK=k;sgo("x");RB=pv1;render();window.scrollTo(0,0)}}else DT={k:k,t:n}}const SMK=()=>YR?M.slice(0,4):M;
 function ysh(n){M=(+M.slice(0,4)+n)+"-"+M.slice(5);render()}
 function ysel(y){M=y+"-"+M.slice(5);render()}
@@ -225,7 +225,7 @@ function snav(){const[y,m]=M.split("-").map(Number),cm=per(today),cy=+cm.slice(0
 function render(){
  const b=bal(),tC=WAL.filter(w=>!sav.includes(w)&&w!=="Wallet").reduce((s,w)=>s+b[w],0),tS=WAL.filter(w=>sav.includes(w)).reduce((s,w)=>s+b[w],0);
  $("ht").textContent=V==="m"?"الرئيسية":V==="x"?(XK==="i"?"الدخل":"المصاريف"):V==="e"?"المصاريف":V==="i"?"الدخل":V==="n"?"الضروريات والكماليات":V==="g"?"الإعدادات":V==="s"&&SG?"المدخرات والحسابات":"المدخرات";
- $("hb").style.visibility=V==="n"||(V==="s"&&SG)||V==="x"?"visible":"hidden";$("hg").style.visibility="visible";$("hb").innerHTML=(V==="m"&&RB)||(V==="n"&&NS)||V==="x"?'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>':V==="m"?"◔":'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg><span>رجوع</span>';$("hb").setAttribute("aria-label","رجوع");$("hb").onclick=()=>{if((V==="m"||V==="x")&&(RB||V==="x")){const b=RB||"e";RB=b==="x"?XK:null;V=b;render();window.scrollTo(0,0)}else if(V==="n"){if(NS){NS="";V="m";render();window.scrollTo(0,0)}else{NO={};V="m";render();window.scrollTo(0,0)}}else if(V==="s"&&SG){SG="";render()}};
+ $("hb").style.visibility=V==="n"||(V==="s"&&SG)?"visible":"hidden";$("hg").style.visibility="visible";$("hb").innerHTML=(V==="m"&&RB)||(V==="n"&&NS)||V==="x"?'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>':V==="m"?"◔":'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg><span>رجوع</span>';$("hb").setAttribute("aria-label","رجوع");$("hb").onclick=()=>{if((V==="m"||V==="x")&&(RB||V==="x")){const b=RB||"e";RB=b==="x"?XK:null;V=b;render();window.scrollTo(0,0)}else if(V==="n"){if(NS){NS="";V="m";render();window.scrollTo(0,0)}else{NO={};V="m";render();window.scrollTo(0,0)}}else if(V==="s"&&SG){SG="";render()}};
  $("pl").classList.remove("hide");
  $("pl").innerHTML=`<div class="hb wl" onclick="wedit()"><span>Wallet</span><b>${fmt(b.Wallet)}</b></div><div class="hb"><span>المدخرات</span><b>${fmt(tS+tC)}</b></div>`;
  $("bar").classList.toggle("hide",V!=="e"&&V!=="i");if(!$("qc").classList.contains("sl")){$("qc").textContent=V==="i"?"اختر بند الدخل":"اختر بند الصرف"}$("qc").onclick=V==="i"?inc:exa;$("bar2").classList.toggle("hide",V!=="s");
@@ -573,9 +573,9 @@ let SH0=false,SY0=0,V0="";document.addEventListener("click",()=>{V0=V;SH0=!$("sh
  const fin=()=>{vw.style.transition="";vw.style.transform="";vw.style.willChange="";clipX(false)};
  const rmG=()=>{if(gh){gh.el.remove();gh=null}};
  const mkG=(ti,dir)=>{rmG();const k=PG[ti],g=document.createElement("div"),hd=document.querySelector("header"),top=hd?hd.getBoundingClientRect().bottom:0,s0={V,QS,QV,SG,OW,NS,NO,RB};
-  g.id="vg";g.setAttribute("aria-hidden","true");g.style.cssText="position:fixed;margin:0;clip-path:inset(0);pointer-events:none;z-index:5;background:var(--bg);min-height:0;padding-bottom:0;will-change:transform;top:"+top+"px;left:"+vw.offsetLeft+"px;width:"+vw.offsetWidth+"px;height:"+Math.max(0,innerHeight-top)+"px";
+  g.id="vg";g.setAttribute("aria-hidden","true");g.style.cssText="position:fixed;margin:0;overflow:hidden;contain:paint;pointer-events:none;z-index:5;background:var(--bg);min-height:0;padding-bottom:0;will-change:transform;top:"+top+"px;left:"+vw.offsetLeft+"px;width:"+vw.offsetWidth+"px;height:"+Math.max(0,innerHeight-top)+"px";
   document.body.appendChild(g);vw.id="v0";g.id="v";
-  try{V=k;QS=QV="";SG="";OW="";NS="";NO={};if(!["m","s","g","n"].includes(k))RB=null;(k==="s"?savs:k==="e"?main:ipg)();try{stk()}catch(e2){}g.id="vg";gh={el:g,dir}}
+  try{V=k;QS=QV="";SG="";OW="";NS="";NO={};if(!["m","s","g","n"].includes(k))RB=null;(k==="s"?savs:k==="e"?main:ipg)();try{stk()}catch(e2){}try{const e=g.querySelector(".ms .on");if(e){const p=e.parentNode;p.scrollLeft+=e.getBoundingClientRect().left+e.offsetWidth/2-(p.getBoundingClientRect().left+p.clientWidth/2)}const ch=g.clientHeight;[...g.children].forEach(c=>{if(c.offsetTop>ch+40)c.remove()})}catch(e3){}g.id="vg";gh={el:g,dir}}
   catch(e){g.remove();gh=null}
   finally{vw.id="v";if(g.id==="v")g.id="vg";V=s0.V;QS=s0.QS;QV=s0.QV;SG=s0.SG;OW=s0.OW;NS=s0.NS;NO=s0.NO;RB=s0.RB}};
  document.addEventListener("touchstart",e=>{sw=null;if(busy2||e.touches.length!==1||ovl()||PG.indexOf(V)<0||(V==="s"&&SG))return;const t=e.target,c=e.touches[0];if(!(vw.contains(t)||t===document.body||t===document.documentElement))return;if(c.clientX<14||c.clientX>innerWidth-14)return;if(nox(t))return;sw={x:c.clientX,y:c.clientY,t:Date.now(),k:0,dx:0,i:PG.indexOf(V)}},{passive:true});
@@ -587,7 +587,7 @@ let SH0=false,SY0=0,V0="";document.addEventListener("click",()=>{V0=V;SH0=!$("sh
   if(!(ti>=0&&ti<PG.length&&(Math.abs(dx)>w*.28||(vel>.5&&Math.abs(dx)>40)))){mv(0,220);setTimeout(()=>{rmG();fin()},240);return}
   busy2=true;const g0=gh;mv(-dir*w,g0?220:160);
   setTimeout(()=>{vw.style.transition="none";vw.style.transform="";try{const m=M,y=YR,k=PG[ti];if(k!==V){if(!["m","s","g","n"].includes(k))RB=null;SG="";OW="";NS="";NO={};QS=QV=""}V=k;M=m;YR=y;render();window.scrollTo(0,0)}catch(err){}
-   if(g0){const done=()=>{window.scrollTo(0,0);rmG();fin();busy2=false};requestAnimationFrame(()=>requestAnimationFrame(done))}else{mv(dir*w,0);void vw.offsetWidth;mv(0,200);setTimeout(()=>{fin();busy2=false},230)}},g0?235:165)};
+   if(g0){const done=()=>{window.scrollTo(0,0);fin();g0.el.style.transition="opacity .16s ease-out";g0.el.style.opacity="0";setTimeout(()=>{rmG();busy2=false},190)};requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(done,40)))}else{mv(dir*w,0);void vw.offsetWidth;mv(0,200);setTimeout(()=>{fin();busy2=false},230)}},g0?235:165)};
  document.addEventListener("touchend",end);document.addEventListener("touchcancel",end);
  /* نقاط الصفحات (زي الآيفون) */
  const dt=document.createElement("div");dt.id="pgd";dt.setAttribute("aria-hidden","true");dt.style.cssText="position:fixed;left:0;right:0;z-index:14;display:none;justify-content:center;gap:7px;direction:ltr;pointer-events:none;transition:bottom .15s";

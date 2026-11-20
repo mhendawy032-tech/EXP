@@ -1,4 +1,4 @@
-const CACHE = "exp-pwa-v14";
+const CACHE = "exp-pwa-v16";
 const ASSETS = [
   "./",
   "./index.html",
