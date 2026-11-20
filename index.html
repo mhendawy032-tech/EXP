@@ -561,21 +561,31 @@ document.addEventListener("click",e=>{const t=e.target&&e.target.closest?e.targe
 let SH0=false,SY0=0,V0="";document.addEventListener("click",()=>{V0=V;SH0=!$("sh").classList.contains("hide");SY0=window.scrollY},true);
 /* الضروريات والكماليات بالطول، والرجوع للرئيسية بالعرض (لو الموبيل كان بالعرض وقت الدخول) */
 {const mq=window.matchMedia("(orientation: landscape) and (max-height: 500px) and (pointer: coarse)"),so=window.screen&&screen.orientation,lk=t=>{try{const r=so&&so.lock&&so.lock(t);if(r&&r.catch)r.catch(()=>{})}catch(_){}},ul=()=>{try{so&&so.unlock&&so.unlock()}catch(_){}};let pv="e",was=false;const r0=render;render=function(){const r=r0.apply(this,arguments),pr=pv;if(V!==pr){pv=V;if(V==="n"&&pr!=="n"){if(mq.matches){was=true;lk("portrait")}}else if(pr==="n"&&was){was=false;lk("landscape");setTimeout(ul,1500)}}return r}}
-/* سحب الشاشة للتنقل بين: الرئيسية ← المصاريف ← الدخل (يمين/شمال) */
-{const PG=["m","e","i"],vw=$("v");let sw=null,busy2=false;
+/* سحب الشاشة للتنقل بين: الرئيسية ← المصاريف ← الدخل (يمين/شمال) — الصفحة المجاورة تظهر جنب الحالية أثناء السحب */
+{const PG=["m","e","i"],vw=$("v");let sw=null,busy2=false,gh=null;
  const ovl=()=>["sh","ck","lk"].some(i=>{const e=$(i);return e&&!e.classList.contains("hide")});
  const nox=el=>{for(;el&&el!==document.body&&el!==document.documentElement;el=el.parentElement){const t=el.tagName;if(t==="INPUT"||t==="TEXTAREA"||t==="SELECT"||el.isContentEditable)return true;if(el.scrollWidth>el.clientWidth+2){const o=getComputedStyle(el).overflowX;if(o==="auto"||o==="scroll")return true}}return false};
- const mv=(x,ms)=>{vw.style.transition=ms?"transform "+ms+"ms cubic-bezier(.2,.8,.2,1)":"none";vw.style.transform=x?"translate3d("+x+"px,0,0)":""};
+ const W=()=>innerWidth||360,EZ="cubic-bezier(.2,.8,.2,1)";
+ const mv=(x,ms)=>{const t=ms?"transform "+ms+"ms "+EZ:"none";vw.style.transition=t;vw.style.transform=x?"translate3d("+x+"px,0,0)":"";if(gh){gh.el.style.transition=t;gh.el.style.transform="translate3d("+(x+(gh.dir>0?W():-W()))+"px,0,0)"}};
  const clipX=on=>{[document.documentElement,document.body].forEach(el=>{el.style.overflowX=on?"hidden":"";if(on)el.style.overflowX="clip"})};
  const fin=()=>{vw.style.transition="";vw.style.transform="";vw.style.willChange="";clipX(false)};
+ const rmG=()=>{if(gh){gh.el.remove();gh=null}};
+ const mkG=(ti,dir)=>{rmG();const k=PG[ti],g=document.createElement("div"),hd=document.querySelector("header"),top=hd?hd.getBoundingClientRect().bottom:0,s0={V,QS,QV,SG,OW,NS,NO,RB};
+  g.id="vg";g.setAttribute("aria-hidden","true");g.style.cssText="position:fixed;margin:0;clip-path:inset(0);pointer-events:none;z-index:5;background:var(--bg);min-height:0;padding-bottom:0;will-change:transform;top:"+top+"px;left:"+vw.offsetLeft+"px;width:"+vw.offsetWidth+"px;height:"+Math.max(0,innerHeight-top)+"px";
+  document.body.appendChild(g);vw.id="v0";g.id="v";
+  try{V=k;QS=QV="";SG="";OW="";NS="";NO={};if(!["m","s","g","n"].includes(k))RB=null;(k==="m"?ana2:k==="e"?main:ipg)();try{stk()}catch(e2){}g.id="vg";gh={el:g,dir}}
+  catch(e){g.remove();gh=null}
+  finally{vw.id="v";if(g.id==="v")g.id="vg";V=s0.V;QS=s0.QS;QV=s0.QV;SG=s0.SG;OW=s0.OW;NS=s0.NS;NO=s0.NO;RB=s0.RB}};
  document.addEventListener("touchstart",e=>{sw=null;if(busy2||e.touches.length!==1||ovl()||PG.indexOf(V)<0)return;const t=e.target,c=e.touches[0];if(!(vw.contains(t)||t===document.body||t===document.documentElement))return;if(c.clientX<14||c.clientX>innerWidth-14)return;if(nox(t))return;sw={x:c.clientX,y:c.clientY,t:Date.now(),k:0,dx:0,i:PG.indexOf(V)}},{passive:true});
- document.addEventListener("touchmove",e=>{if(!sw)return;if(e.touches.length!==1){sw=null;fin();return}const c=e.touches[0],dx=c.clientX-sw.x,dy=c.clientY-sw.y;
+ document.addEventListener("touchmove",e=>{if(!sw)return;if(e.touches.length!==1){sw=null;rmG();fin();return}const c=e.touches[0],dx=c.clientX-sw.x,dy=c.clientY-sw.y;
   if(!sw.k){if(Math.abs(dx)<8&&Math.abs(dy)<8)return;if(Math.abs(dx)>Math.abs(dy)*1.3){sw.k=1;vw.style.willChange="transform";clipX(true)}else{sw=null;return}}
-  if(e.cancelable)e.preventDefault();const ti=sw.i+(dx<0?1:-1);sw.dx=dx;mv(ti<0||ti>=PG.length?dx*.25:dx,0)},{passive:false});
- const end=()=>{if(!sw||sw.k!==1){sw=null;return}const dx=sw.dx,w=innerWidth||360,dir=dx<0?1:-1,ti=sw.i+dir,vel=Math.abs(dx)/Math.max(1,Date.now()-sw.t);sw=null;
-  if(!(ti>=0&&ti<PG.length&&(Math.abs(dx)>w*.28||(vel>.5&&Math.abs(dx)>40)))){mv(0,220);setTimeout(fin,240);return}
-  busy2=true;mv(-dir*w,160);
-  setTimeout(()=>{try{const m=M,y=YR;go(PG[ti]);M=m;YR=y;render();window.scrollTo(0,0)}catch(err){}mv(dir*w,0);void vw.offsetWidth;mv(0,200);setTimeout(()=>{fin();busy2=false},230)},165)};
+  if(e.cancelable)e.preventDefault();const dir=dx<0?1:-1,ti=sw.i+dir,ok=ti>=0&&ti<PG.length;
+  if(ok){if(!gh||gh.dir!==dir)mkG(ti,dir)}else rmG();sw.dx=dx;mv(ok?dx:dx*.25,0)},{passive:false});
+ const end=()=>{if(!sw||sw.k!==1){sw=null;return}const dx=sw.dx,w=W(),dir=dx<0?1:-1,ti=sw.i+dir,vel=Math.abs(dx)/Math.max(1,Date.now()-sw.t);sw=null;
+  if(!(ti>=0&&ti<PG.length&&(Math.abs(dx)>w*.28||(vel>.5&&Math.abs(dx)>40)))){mv(0,220);setTimeout(()=>{rmG();fin()},240);return}
+  busy2=true;const g0=gh;mv(-dir*w,g0?220:160);
+  setTimeout(()=>{vw.style.transition="none";vw.style.transform="";try{const m=M,y=YR;go(PG[ti]);M=m;YR=y;render();window.scrollTo(0,0)}catch(err){}
+   if(g0){rmG();fin();busy2=false}else{mv(dir*w,0);void vw.offsetWidth;mv(0,200);setTimeout(()=>{fin();busy2=false},230)}},g0?235:165)};
  document.addEventListener("touchend",end);document.addEventListener("touchcancel",end);
  /* نقاط الصفحات (زي الآيفون) */
  const dt=document.createElement("div");dt.id="pgd";dt.setAttribute("aria-hidden","true");dt.style.cssText="position:fixed;left:0;right:0;z-index:14;display:none;justify-content:center;gap:7px;direction:ltr;pointer-events:none;transition:bottom .15s";
